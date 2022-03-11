@@ -985,6 +985,8 @@ function _renderSkeletonUI2(isWaitingResponse) {
     this.skeletonListComponent = new _SkeletonListComponent__WEBPACK_IMPORTED_MODULE_9__["default"](this.$videoList);
     return;
   }
+  /** 하위컴포넌트의 메소드를 직접 수행하고 싶지 않습니다.. unmount 되도록 하는게 좋겟져 ?! */
+
 
   (_this$skeletonListCom = this.skeletonListComponent) === null || _this$skeletonListCom === void 0 ? void 0 : _this$skeletonListCom.unmount();
 }
@@ -994,6 +996,7 @@ function _renderSearchResult2(searchResult) {
 
   var videoList = searchResult.videoList,
       prevVideoListLength = searchResult.prevVideoListLength;
+  /** innerHTML의 사용 없이 hide나 show 클래스로 제어해볼까? */
 
   if (prevVideoListLength === 0) {
     this.$searchResult.classList.remove('search-result--no-result');
@@ -1353,34 +1356,41 @@ var generateQueryString = function generateQueryString(params) {
 
 var youtubeAPIFetcher = /*#__PURE__*/function () {
   var _ref4 = (0,_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0__["default"])( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee(_ref3) {
-    var path, params, response, data;
+    var path, params, url, parameters, response, data;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             path = _ref3.path, params = _ref3.params;
-            _context.next = 3;
-            return fetch("".concat(_constants_fetcher__WEBPACK_IMPORTED_MODULE_3__.API_URL).concat(path, "?key=").concat("AIzaSyAy_rqbQooEOJEEqrUzNXMs__OJ0tiiQU8").concat(generateQueryString(params)), {});
 
-          case 3:
+            /** url 만드는 함수로 ? */
+            url = new URL('youtube/search', 'jolly-agnesi-fe3944.netlify.app');
+            parameters = new URLSearchParams(params);
+            url.search = parameters.toString();
+            _context.next = 6;
+            return fetch(url, {
+              method: 'GET'
+            });
+
+          case 6:
             response = _context.sent;
 
             if (!response.ok) {
-              _context.next = 9;
+              _context.next = 12;
               break;
             }
 
-            _context.next = 7;
+            _context.next = 10;
             return response.json();
 
-          case 7:
+          case 10:
             data = _context.sent;
             return _context.abrupt("return", data);
 
-          case 9:
+          case 12:
             throw new Error("api \uC694\uCCAD \uC911 \uC5D0\uB7EC \uBC1C\uC0DD: ".concat(response.status));
 
-          case 10:
+          case 13:
           case "end":
             return _context.stop();
         }
