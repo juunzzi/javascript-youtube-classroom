@@ -1206,7 +1206,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "API_PATHS": () => (/* binding */ API_PATHS)
 /* harmony export */ });
 var API_PATHS = {
-  SEARCH: 'youtube/search'
+  SEARCH: 'youtube/v3/search'
 };
 
 /***/ }),
