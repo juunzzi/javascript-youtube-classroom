@@ -214,7 +214,7 @@ var AppBusiness = /*#__PURE__*/function () {
                     part: 'snippet',
                     maxResults: 10,
                     type: 'video',
-                    pageToken: pageToken
+                    pageToken: pageToken !== null && pageToken !== void 0 ? pageToken : ''
                   }
                 });
 
@@ -1687,7 +1687,7 @@ var generateQueryString = function generateQueryString(params) {
 };
 var createURL = function createURL(path, params) {
   var url = new URL(path, "https://jolly-agnesi-fe3944.netlify.app");
-  url.search = generateQueryString(params);
+  url.search = new URLSearchParams(params).toString();
   return url;
 };
 
