@@ -15,7 +15,11 @@ class VideoContainerComponent {
 
   #parentElement = null;
 
+  #lazyLoadThrottleTimeout = null;
+
   #videoContainerObserver;
+
+  #videoComponents = [];
 
   constructor(parentElement) {
     this.#parentElement = parentElement;
@@ -72,6 +76,7 @@ class VideoContainerComponent {
         });
       }
     });
+    this.$videoList.addEventListener('scroll', this.#onScrollInVideoContainer);
   }
 
   #subscribeStore() {
@@ -98,18 +103,21 @@ class VideoContainerComponent {
       return;
     }
     if (isFirstSearchByKeyword(prevVideoListLength)) {
+      this.#videoComponents = [];
       this.$videoList.innerHTML = '';
     }
 
     this.#showVideoList();
-
-    videoList.slice(prevVideoListLength).forEach(
-      (video, idx, arr) =>
+    videoList.slice(prevVideoListLength).forEach((video, idx, arr) => {
+      this.#videoComponents = [
+        ...this.#videoComponents,
         new VideoComponent(this.$videoList, {
           video,
           observer: idx === arr.length - 1 ? this.#videoContainerObserver : null,
-        })
-    );
+          notLazyLoad: prevVideoListLength === 0,
+        }),
+      ];
+    });
   }
 
   #showVideoList() {
@@ -148,5 +156,17 @@ class VideoContainerComponent {
       }
     });
   }
+
+  #onScrollInVideoContainer = () => {
+    if (this.#lazyLoadThrottleTimeout) {
+      clearTimeout(this.#lazyLoadThrottleTimeout);
+    }
+    this.#lazyLoadThrottleTimeout = setTimeout(() => {
+      this.#videoComponents.forEach((videoComponent) => {
+        const { bottom } = this.$videoList.getBoundingClientRect();
+        videoComponent.loadImg(bottom);
+      });
+    }, 100);
+  };
 }
 export default VideoContainerComponent;
