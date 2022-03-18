@@ -338,7 +338,7 @@ var AppBusiness = /*#__PURE__*/function () {
           element = _ref13$detail.element;
       var className = element.className;
 
-      if (className.includes('checked')) {
+      if ((0,_utils_validation__WEBPACK_IMPORTED_MODULE_10__.isCheckedVideo)(className)) {
         _modules_webStore__WEBPACK_IMPORTED_MODULE_14__["default"].setData(_constants_webStore__WEBPACK_IMPORTED_MODULE_17__.WEB_STORE_KEY.WATCHED_VIDEO_LIST_KEY, function (prev) {
           return prev.filter(function (videoId) {
             return savedVideoId !== videoId;
@@ -406,8 +406,6 @@ var AppBusiness = /*#__PURE__*/function () {
 
       return requestSearchVideoList;
     }()
-    /** 한 가지일만 하도록 구현한다. */
-
   }, {
     key: "requestVideoById",
     value: function () {
@@ -448,8 +446,6 @@ var AppBusiness = /*#__PURE__*/function () {
 
       return requestVideoById;
     }()
-    /** 검색 API 결과로 부터, videoList - nextPageToken 값을 추출한다. */
-
   }, {
     key: "extractSearchResult",
     value: function extractSearchResult(searchResult) {
@@ -1260,7 +1256,7 @@ var VideoComponent = /*#__PURE__*/function () {
       var _this$$videoImg$getBo = this.$videoImg.getBoundingClientRect(),
           top = _this$$videoImg$getBo.top;
 
-      if ((0,_utils_validation__WEBPACK_IMPORTED_MODULE_8__.canLoadImage)(top, showingCutline) && (0,_utils_validation__WEBPACK_IMPORTED_MODULE_8__.hasNotSrcAttribute)(this.$videoImg)) {
+      if ((0,_utils_validation__WEBPACK_IMPORTED_MODULE_8__.isLoadableImage)(top, showingCutline, this.$videoImg)) {
         var src = this.$videoImg.dataset.src;
         this.$videoImg.src = src;
       }
@@ -1362,6 +1358,8 @@ var _onClickVideoList = /*#__PURE__*/new WeakMap();
 
 var _generateVideoComponents = /*#__PURE__*/new WeakSet();
 
+var _parseWatchAndWahtchedVideo = /*#__PURE__*/new WeakSet();
+
 var SavedVideoListComponent = /*#__PURE__*/function (_VideoListComponent) {
   (0,_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5__["default"])(SavedVideoListComponent, _VideoListComponent);
 
@@ -1374,6 +1372,8 @@ var SavedVideoListComponent = /*#__PURE__*/function (_VideoListComponent) {
     (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__["default"])(this, SavedVideoListComponent);
 
     _this = _super.call(this, parentElement, type);
+
+    _classPrivateMethodInitSpec((0,_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4__["default"])(_this), _parseWatchAndWahtchedVideo);
 
     _classPrivateMethodInitSpec((0,_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4__["default"])(_this), _generateVideoComponents);
 
@@ -1415,21 +1415,9 @@ var SavedVideoListComponent = /*#__PURE__*/function (_VideoListComponent) {
       var savedVideoList = _ref.videoList;
       this.$videoList.innerHTML = '';
 
-      var _savedVideoList$reduc = savedVideoList.reduce(function (prev, savedVideo) {
-        var _savedVideo$getVideoI = savedVideo.getVideoInfo(),
-            videoId = _savedVideo$getVideoI.videoId;
-
-        var isWatched = watchedVideoIdList.includes(videoId);
-        return _objectSpread(_objectSpread({}, prev), {}, {
-          watchVideoList: isWatched ? prev.watchVideoList : [].concat((0,_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__["default"])(prev.watchVideoList), [savedVideo]),
-          watchedVideoList: isWatched ? [].concat((0,_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__["default"])(prev.watchedVideoList), [savedVideo]) : prev.watchedVideoList
-        });
-      }, {
-        watchVideoList: [],
-        watchedVideoList: []
-      }),
-          watchVideoList = _savedVideoList$reduc.watchVideoList,
-          watchedVideoList = _savedVideoList$reduc.watchedVideoList;
+      var _classPrivateMethodGe = _classPrivateMethodGet(this, _parseWatchAndWahtchedVideo, _parseWatchAndWahtchedVideo2).call(this, savedVideoList, watchedVideoIdList),
+          watchVideoList = _classPrivateMethodGe.watchVideoList,
+          watchedVideoList = _classPrivateMethodGe.watchedVideoList;
 
       this.videoComponents = _classPrivateMethodGet(this, _generateVideoComponents, _generateVideoComponents2).call(this, this.componentType === _constants_components__WEBPACK_IMPORTED_MODULE_10__.VIDEO_COMPONENT_TYPE.WATCH ? watchVideoList : watchedVideoList);
     }
@@ -1447,6 +1435,22 @@ function _generateVideoComponents2(savedVideoList) {
       notLazyLoad: idx < 10,
       type: _this2.componentType
     });
+  });
+}
+
+function _parseWatchAndWahtchedVideo2(savedVideoList, watchedVideoIdList) {
+  return savedVideoList.reduce(function (prev, savedVideo) {
+    var _savedVideo$getVideoI = savedVideo.getVideoInfo(),
+        videoId = _savedVideo$getVideoI.videoId;
+
+    var isWatched = watchedVideoIdList.includes(videoId);
+    return _objectSpread(_objectSpread({}, prev), {}, {
+      watchVideoList: isWatched ? prev.watchVideoList : [].concat((0,_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__["default"])(prev.watchVideoList), [savedVideo]),
+      watchedVideoList: isWatched ? [].concat((0,_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__["default"])(prev.watchedVideoList), [savedVideo]) : prev.watchedVideoList
+    });
+  }, {
+    watchVideoList: [],
+    watchedVideoList: []
   });
 }
 
@@ -2719,8 +2723,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "canLoadImage": () => (/* binding */ canLoadImage),
 /* harmony export */   "hasMissingProperty": () => (/* binding */ hasMissingProperty),
 /* harmony export */   "hasNotSrcAttribute": () => (/* binding */ hasNotSrcAttribute),
+/* harmony export */   "isCheckedVideo": () => (/* binding */ isCheckedVideo),
 /* harmony export */   "isEmptyKeyword": () => (/* binding */ isEmptyKeyword),
 /* harmony export */   "isFirstSearchByKeyword": () => (/* binding */ isFirstSearchByKeyword),
+/* harmony export */   "isLoadableImage": () => (/* binding */ isLoadableImage),
 /* harmony export */   "isMoreThanMaxVideoCount": () => (/* binding */ isMoreThanMaxVideoCount),
 /* harmony export */   "isNoneSearchResult": () => (/* binding */ isNoneSearchResult),
 /* harmony export */   "isNullVideoList": () => (/* binding */ isNullVideoList)
@@ -2754,6 +2760,12 @@ var canLoadImage = function canLoadImage(showingPX, showingCutline) {
 };
 var hasNotSrcAttribute = function hasNotSrcAttribute(imgElement) {
   return !imgElement.src;
+};
+var isCheckedVideo = function isCheckedVideo(className) {
+  return className.includes('checked');
+};
+var isLoadableImage = function isLoadableImage(top, showingCutline, target) {
+  return canLoadImage(top, showingCutline) && hasNotSrcAttribute(target);
 };
 
 /***/ }),
